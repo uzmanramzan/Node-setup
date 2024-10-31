@@ -11,15 +11,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: deploying application to EC2
+      - name: Deploying application to EC2
         env:
-          PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY  }}
-          HOSTNAME: ${{ secrets.SERVER_HOST  }}
-          USER_NAME: ${{ secrets.SERVER_USERNAME  }}
+          PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          HOSTNAME: ${{ secrets.SERVER_HOST }}
+          USER_NAME: ${{ secrets.SERVER_USERNAME }}
 
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ubuntu@ec2-3-139-78-0.us-east-2.compute.amazonaws.com'
-          ls
-          '
-
+          echo "$PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key "${USER_NAME}@${HOSTNAME}" << 'EOF'
+            # Commands to execute on the remote server
+            ls
+          EOF
